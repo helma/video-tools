@@ -17,7 +17,6 @@ Window {
       onAccepted: {
           video1.stop()
           video1.source = fileDialog1.fileUrl
-          video1.play()
       }
       Component.onCompleted: visible = false
   }
@@ -27,7 +26,6 @@ Window {
       onAccepted: {
           video2.stop()
           video2.source = fileDialog2.fileUrl
-          video2.play()
       }
       Component.onCompleted: visible = false
   }
@@ -39,9 +37,8 @@ Window {
           id: video1
           width: Screen.width/2
           height: Screen.height*0.95
-          source: "../videos/climbing/rissprojekt/riss1.mp4"
-          autoLoad: true
           muted: true
+          onPositionChanged: pos1.value = video1.position/video1.duration
         }
         Row {
           anchors.horizontalCenter: video1.horizontalCenter
@@ -52,7 +49,11 @@ Window {
           Slider {
             id: pos1
             value: 0.0
-            onValueChanged: video1.seek(video1.duration*pos1.value)
+            onValueChanged: {
+              //video1.stop()
+              //video2.stop()
+              video1.seek(video1.duration*pos1.value)
+            }
           }
         }
       }
@@ -61,9 +62,8 @@ Window {
           id: video2
           width: Screen.width/2
           height: Screen.height*0.95
-          source: "../videos/climbing/rissprojekt/riss3.mp4"
-          autoLoad: true
           muted: true
+          onPositionChanged: pos2.value = video2.position/video2.duration
         }
         Row {
           anchors.horizontalCenter: video2.horizontalCenter
@@ -74,18 +74,45 @@ Window {
           Slider {
             id: pos2
             value: 0.0
-            onValueChanged: video2.seek(video2.duration*pos2.value)
+            onValueChanged: {
+              if (pos2.pressed) {
+                video2.pause()
+                video2.seek(video2.duration*pos2.value)
+                if (player.running) { video2.play() }
+              }
+            }
           }
         }
       }
     }
     Row {
+      anchors.horizontalCenter: root.horizontalCenter
       Button {
+        id: player
+        property bool running
         text: ">"
         onClicked: {
-        video1.playbackState == MediaPlayer.PlayingState ? video1.pause() : video1.play()
-        video2.playbackState == MediaPlayer.PlayingState ? video2.pause() : video2.play()
+          if (player.running) {
+            video1.pause()
+            video2.pause()
+            player.running = false
+            player.text = ">"
+          } else {
+            video1.play()
+            video2.play()
+            player.running = true
+            player.text = "||"
           }
+        }
+      }
+      Slider {
+        id: speed
+        value: 1.0
+        maximumValue: 4.0
+        onValueChanged: {
+          video1.playbackRate = value
+          video2.playbackRate = value
+        }
       }
     }
   }
