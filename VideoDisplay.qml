@@ -9,6 +9,7 @@ Item {
 
   property alias rate: v.playbackRate
   property alias source: v.source
+  property alias position: v.position
 
   property real start: 0
   property real end: v.duration

@@ -3,6 +3,7 @@ import QtQuick 2.3
 Item {
 
   property alias source: videoDisplay.source
+  property alias position: videoDisplay.position
   anchors.fill: parent
   focus: true
 
