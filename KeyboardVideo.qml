@@ -20,6 +20,8 @@ Item {
       case(Qt.Key_Period): videoDisplay.setEnd(); break
       case(Qt.Key_M): videoDisplay.deleteStart(); break 
       case(Qt.Key_Slash): videoDisplay.deleteEnd(); break
+      case(Qt.Key_Return): videoDisplay.setMark();break
+      case(Qt.Key_Backspace): videoDisplay.removeMark();break
     }
   }
 
