@@ -7,7 +7,7 @@ Item {
 
   id: videoDisplay
   anchors.fill: parent
-  focus: true
+  //focus: true
 
   property alias rate: v.playbackRate
   property alias source: v.source
@@ -44,7 +44,7 @@ Item {
 
   Timer {
     id: t
-    interval: 1; running: true; repeat: true
+    interval: 10; running: true; repeat: true
     onTriggered: {
       cursor.x = videoDisplay.ratio * v.position - cursor.width/2
       if (v.position > 0 && v.position >= videoDisplay.end) {
@@ -134,13 +134,5 @@ Item {
     anchors.fill: parent
     delegate: delegate
   }
-  /*
-  Text {
-    //anchors.bottom: parent.bottom
-      y: Screen.height - 10
-    //id: tm
-    text: controller.markers.count
-    color: "white"
-  }
-  */
+
 }
