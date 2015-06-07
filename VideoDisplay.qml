@@ -7,14 +7,11 @@ Item {
 
   id: videoDisplay
   anchors.fill: parent
-  //focus: true
 
   property alias rate: v.playbackRate
   property alias source: v.source
   property alias position: v.position
 
-  property real start: 0
-  property real end: v.duration
   property bool loop
   property real ratio: Screen.width/v.duration
 
@@ -24,18 +21,20 @@ Item {
   function toggle() { v.playbackState == MediaPlayer.PlayingState ? v.pause() : v.play() }
   function slower() { v.playbackRate = v.playbackRate/2.0 }
   function faster() { v.playbackRate = v.playbackRate*2.0 }
-  function setStart() { start = v.position; s.x = start*ratio }
-  function setEnd() { end = v.position }
-  function deleteStart() { start = 0 }
-  function deleteEnd() { end = v.duration }
+  function setStart() { controller.reset_marker("start",v.position) }
+  function setEnd() { controller.reset_marker("end",v.position) }
+  function deleteStart() { controller.reset_marker("start",0) }
+  function deleteEnd() { controller.reset_marker("end",v.duration) }
   function ffwd() { v.seek(v.position + 1000) }
   function fbwd() { v.seek(v.position - 1000) }
   function fwd() { v.seek(v.position + 50) }
   function bwd() { v.seek(v.position - 50) }
-  function setMark() { controller.add_marker(v.position) }
+  function setMark() { controller.add_marker("marker",v.position) }
+  function deleteMark() { controller.delete_marker("marker",v.position) }
 
   Component.onCompleted: {
-    video.source = controller.files[0]
+    video.source = controller.file
+    if (!controller.start) controller.add_marker("start", 0)
   }
    
   Controller {
@@ -47,12 +46,11 @@ Item {
     interval: 10; running: true; repeat: true
     onTriggered: {
       cursor.x = videoDisplay.ratio * v.position - cursor.width/2
-      if (v.position > 0 && v.position >= videoDisplay.end) {
-        seek(videoDisplay.start)
+      if (v.position > 0 && v.position >= controller.ende()) {
+        seek(controller.start())
       }
     }
   }
-
 
   Video {
     id: v
@@ -62,6 +60,10 @@ Item {
     width: parent.width
     height: parent.height*0.95
     muted: true
+    onStatusChanged: {
+      if ((status == 6) && (!controller.ende())) controller.add_marker("end", 0)
+    }
+
   }
 
   Row {
@@ -76,55 +78,31 @@ Item {
       text: "Rate: " + v.playbackRate.toFixed(2) + ", "
       color: "white"
     }
-    Text {
-      text: "Start: " + (videoDisplay.start/1000).toFixed(2) + ", "
-      color: "white"
-    }
-    Text {
-      text: "End: " + (videoDisplay.end/1000).toFixed(2) + ", "
-      color: "white"
-    }
-    Text {
-      text: "Dur: " + ((videoDisplay.end-videoDisplay.start)/1000).toFixed(2) 
-      color: "white"
-    }
   }
 
   Rectangle {
     id: cursor
     x: 0
     y: Screen.height - 3*height/2
-    width: 4
+    width: 1
     height: 12
     color: "white"
-  }
-
-  Rectangle {
-    id: s
-    x: start * ratio 
-    y: Screen.height - 3*height/2
-    width: 5
-    height: 12
-    color: "green"
-  }
-
-  Rectangle {
-    id: e
-    x: end * ratio - width
-    y: Screen.height - 3*height/2
-    width: 5
-    height: 12
-    color: "red"
   }
 
   Component {
     id: delegate
     Rectangle {
-      x: t*ratio
+      x: time*ratio - width/2
       y: Screen.height - 3*height/2
-      width: 5
-      height: 5
-      color: "blue"
+      width: 6
+      height: 6
+      color: {
+        switch (name) {
+          case("start"): return "green"; break
+          case("end"): return "red"; break
+          case("marker"): return "blue"; break
+        }
+      }
     }
   }
 

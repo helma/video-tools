@@ -14,13 +14,8 @@ ApplicationWindow {
 
   Component.onCompleted: {
     root.show()
-    video.source = controller.files[0]
+    video.source = controller.file
   }
-   
-  Controller {
-    id: controller
-  }
-
 
   Item {
 
@@ -36,7 +31,6 @@ ApplicationWindow {
     }
     Keys.forwardTo: video
 
-    //VideoDisplay {
     KeyboardVideo {
       id: video
       anchors.fill: parent

@@ -22,6 +22,7 @@ Item {
       case(Qt.Key_Slash): videoDisplay.deleteEnd(); break
       case(Qt.Key_Return): videoDisplay.setMark();break
       case(Qt.Key_Backspace): videoDisplay.removeMark();break
+      case(Qt.Key_S): controller.save();break
     }
   }
 
