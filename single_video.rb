@@ -20,7 +20,6 @@ module Controller
       self.file = ARGV[0]
       f = file+".markers"
       YAML.load_file(f).each {|m| markers << m} if File.exists? f
-      p markers
     end
 
     def quit
@@ -38,8 +37,10 @@ module Controller
 
     def delete_marker n 
       i = markers.find_index{|m| m[:name] == n}
-      p i
-      markers.delete_at i if i
+      while i
+        markers.delete_at i
+        i = markers.find_index{|m| m[:name] == n}
+      end
     end
 
     def start

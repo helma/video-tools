@@ -93,15 +93,20 @@ Item {
     id: delegate
     Rectangle {
       x: time*ratio - width/2
-      y: Screen.height - 3*height/2
-      width: 6
-      height: 6
+      y: Screen.height //- 3*height/2
+      width: 10
+      height: 10
       color: {
         switch (name) {
           case("start"): return "green"; break
           case("end"): return "red"; break
           case("marker"): return "blue"; break
         }
+      }
+      transform: Rotation {
+        origin.x: 0
+        origin.y: 0
+        angle: -45
       }
     }
   }
