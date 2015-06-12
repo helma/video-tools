@@ -4,9 +4,9 @@ require 'qml'
 require 'json'
 require 'yaml'
 require 'fileutils'
-require_relative 'video_model'
+require_relative 'marker'
 
 QML.run do |app|
-  app.context[:model] = Video::Model.new
+  app.context[:marker] = Video::Marker.new
   app.load_path Pathname(__FILE__) + '../SingleVideo.qml'
 end

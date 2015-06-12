@@ -7,10 +7,10 @@ require 'fileutils'
 
 module Video
 
-  class Model
+  class Marker
 
     include QML::Access
-    register_to_qml under: "VideoModel", version: "0.1"
+    register_to_qml under: "Marker", version: "0.1"
 
     property :file
     property :markers, QML::Data::ArrayModel.new(:name,:time)
@@ -42,8 +42,6 @@ module Video
       markers << {:name => n, :time => t}
       #markers.entries.uniq!
       #self.markers = self.markers.sort{|m| m[:time]} if markers
-      print markers.entries.to_yaml.to_s
-      print markers.entries.uniq.to_yaml.to_s
     end
 
     def reset_marker n, t 

@@ -24,8 +24,8 @@ Item {
       case(Qt.Key_Backspace): videoDisplay.deleteMark();break
       case(Qt.Key_Tab): videoDisplay.next_marker();break
       case(Qt.Key_Backtab): videoDisplay.prev_marker();break
-      case(Qt.Key_S): model.save();break
-      case(Qt.Key_Q): model.quit();break
+      case(Qt.Key_S): marker.save();break
+      case(Qt.Key_Q): marker.quit();break
     }
   }
 
