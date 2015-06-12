@@ -1,7 +1,7 @@
 import QtQuick 2.3
 import QtMultimedia 5.0
 import QtQuick.Window 2.2
-import Controller 0.1
+import VideoModel 0.1
 
 Item {
 
@@ -21,31 +21,31 @@ Item {
   function toggle() { v.playbackState == MediaPlayer.PlayingState ? v.pause() : v.play() }
   function slower() { v.playbackRate = v.playbackRate/2.0 }
   function faster() { v.playbackRate = v.playbackRate*2.0 }
-  function setStart() { controller.reset_marker("start",v.position) }
-  function setEnd() { controller.reset_marker("end",v.position) }
-  function deleteStart() { controller.reset_marker("start",0) }
-  function deleteEnd() { controller.reset_marker("end",v.duration) }
+  function setStart() { model.reset_marker("start",v.position) }
+  function setEnd() { model.reset_marker("end",v.position) }
+  function deleteStart() { model.reset_marker("start",0) }
+  function deleteEnd() { model.reset_marker("end",v.duration) }
   function ffwd() { v.seek(v.position + 1000) }
   function fbwd() { v.seek(v.position - 1000) }
   function fwd() { v.seek(v.position + 50) }
   function bwd() { v.seek(v.position - 50) }
-  function setMark() { controller.add_marker("marker",v.position) }
-  function deleteMark() { controller.delete_marker("marker",v.position) }
+  function setMark() { model.add_marker("marker",v.position) }
+  function deleteMark() { model.delete_marker_before(v.position) }
   function next_marker() {
-    v.seek(controller.next_marker_position(v.position))
+    v.seek(model.next_marker_position(v.position))
   }
 
   function prev_marker() {
-    v.seek(controller.prev_marker_position(v.position))
+    v.seek(model.prev_marker_position(v.position))
   }
 
   Component.onCompleted: {
-    video.source = controller.file
-    if (!controller.start) controller.add_marker("start", 0)
+    video.source = model.file
+    if (!model.start) model.add_marker("start", 0)
   }
    
-  Controller {
-    id: controller
+  Model {
+    id: model
   }
 
   Timer {
@@ -53,8 +53,8 @@ Item {
     interval: 10; running: true; repeat: true
     onTriggered: {
       cursor.x = videoDisplay.ratio * v.position - cursor.width/2
-      if (v.position > 0 && v.position >= controller.ende()) {
-        seek(controller.start())
+      if (v.position > 0 && v.position >= model.ende()) {
+        seek(model.start())
       }
     }
   }
@@ -69,8 +69,8 @@ Item {
     muted: true
     onStatusChanged: {
       if (status == 6) {
-        if (!controller.start()) controller.add_marker("start", 0)
-        if (!controller.ende()) controller.add_marker("end", v.duration)
+        if (!model.start()) model.add_marker("start", 0)
+        if (!model.ende()) model.add_marker("end", v.duration)
       }
     }
 
@@ -123,7 +123,7 @@ Item {
 
   Repeater {
     id: m
-    model: controller.markers
+    model: model.markers
     anchors.fill: parent
     delegate: delegate
   }

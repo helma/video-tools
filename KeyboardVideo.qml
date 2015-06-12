@@ -21,10 +21,11 @@ Item {
       case(Qt.Key_M): videoDisplay.deleteStart(); break 
       case(Qt.Key_Slash): videoDisplay.deleteEnd(); break
       case(Qt.Key_Return): videoDisplay.setMark();break
-      case(Qt.Key_Backspace): videoDisplay.removeMark();break
-      case(Qt.Key_S): controller.save();break
+      case(Qt.Key_Backspace): videoDisplay.deleteMark();break
       case(Qt.Key_Tab): videoDisplay.next_marker();break
       case(Qt.Key_Backtab): videoDisplay.prev_marker();break
+      case(Qt.Key_S): model.save();break
+      case(Qt.Key_Q): model.quit();break
     }
   }
 
