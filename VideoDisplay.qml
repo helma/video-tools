@@ -31,6 +31,13 @@ Item {
   function bwd() { v.seek(v.position - 50) }
   function setMark() { controller.add_marker("marker",v.position) }
   function deleteMark() { controller.delete_marker("marker",v.position) }
+  function next_marker() {
+    v.seek(controller.next_marker_position(v.position))
+  }
+
+  function prev_marker() {
+    v.seek(controller.prev_marker_position(v.position))
+  }
 
   Component.onCompleted: {
     video.source = controller.file
@@ -61,7 +68,10 @@ Item {
     height: parent.height*0.95
     muted: true
     onStatusChanged: {
-      if ((status == 6) && (!controller.ende())) controller.add_marker("end", 0)
+      if (status == 6) {
+        if (!controller.start()) controller.add_marker("start", 0)
+        if (!controller.ende()) controller.add_marker("end", v.duration)
+      }
     }
 
   }

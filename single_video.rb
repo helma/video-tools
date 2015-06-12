@@ -26,6 +26,20 @@ module Controller
       QML.application.quit
     end
 
+    def positions
+      markers.collect{|m| m[:time]}
+    end
+
+    def next_marker_position t
+      larger = positions.select { |x| x >= t } 
+      larger.min_by{|x| x-t}
+    end
+
+    def prev_marker_position t
+      smaller = positions.select { |x| x <= t } 
+      smaller.min_by{|x| t-x}
+    end
+
     def add_marker n,t 
       self.markers << {:name => n, :time => t}
     end
