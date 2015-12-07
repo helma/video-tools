@@ -80,5 +80,15 @@ module Video
       File.open(file+".markers","w+"){|f| f.puts markers.entries.uniq.sort_by{|m| m[:time]}.to_yaml }
     end
 
+    def trim
+      pid = fork {
+        ext = File.extname(file)
+        out = File.join(File.dirname(file),File.basename(file,ext)+'cut'+ext)
+        puts `mencoder #{self.file} -o #{out} -ss #{start/1000.0} -endpos #{(ende-start)/1000.0} -nosound -ovc copy &`
+        #FileUtils.mv self.current ,@bak
+      }
+      Process.detach pid
+    end
+
   end
 end

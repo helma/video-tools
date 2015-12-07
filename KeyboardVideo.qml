@@ -25,6 +25,7 @@ Item {
       case(Qt.Key_Tab): videoDisplay.next_marker();break
       case(Qt.Key_Backtab): videoDisplay.prev_marker();break
       case(Qt.Key_S): marker.save();break
+      case(Qt.Key_T): marker.trim();break
       case(Qt.Key_Q): marker.quit();break
     }
   }
